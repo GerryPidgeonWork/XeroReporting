@@ -1,7 +1,6 @@
 # Import necessary libraries (should be consistent across all sheets)
 import os  # Module for interacting with the operating system (e.g., file paths)
 import sys  # Module for accessing system-specific parameters and functions
-import subprocess
 import pandas as pd  # Library for data manipulation and analysis
 import numpy as np  # Library for numerical operations and array handling
 import datetime as dt  # Module for working with dates and times
@@ -13,20 +12,3 @@ from decimal import Decimal  # For precise decimal arithmetic (e.g., handling mo
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 sys.dont_write_bytecode = True  # Stops sys from making __pychace__ folders
 
-# Import specific data and functions from external modules
-
-
-
-
-# Main Code (Should be on line 20)
-# Define required folder paths
-xero_data_folder = Path("/home/gerrypidgeongopuff/CodingRepository/Python/GoPuff/XeroData/source_data/xero_data")
-system_data_folder = Path("/home/gerrypidgeongopuff/CodingRepository/Python/GoPuff/XeroData/source_data/system_data")
-mapping_data_folder = Path("/home/gerrypidgeongopuff/CodingRepository/Python/GoPuff/XeroData/source_data/mapping_data")
-download_folder = Path("/mnt/c/Users/GerryPidgeon/Downloads")
-
-xero_data_folder = Path(r"H:/Shared drives/EU Finance & Accounting/Commercial Finance/Month End Reporting/01 Raw Data/01 Xero Export Data")
-axiom_data_folder = Path(r"H:\Shared drives\EU Finance & Accounting\Commercial Finance\Month End Reporting\01 Raw Data\02 Axiom Mapping Data")
-
-wsl_path = subprocess.check_output(["wslpath", str(xero_data_folder)]).decode().strip()
-print(wsl_path)

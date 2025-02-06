@@ -16,7 +16,7 @@ sys.dont_write_bytecode = True  # Stops sys from making __pychace__ folders
 from processes.P01_set_file_paths import download_folder
 from processes.P03_shared_functions import clean_numeric_column, calculate_x_rate
 from processes.P04_static_lists import XERO_COLUMNS_TO_KEEP, XERO_COLUMNS_TO_RENAME, XERO_COLUMNS_SORT_ORDER
-from main.M01_import_raw_data import imported_xero_data
+from main.M01a_import_raw_xero_data import imported_xero_data
 
 # Main Code
 def process_xero_data():
