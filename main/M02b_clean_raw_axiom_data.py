@@ -45,22 +45,6 @@ allocation_logic_axiom_df['PandasConversion'] = (allocation_logic_axiom_df['Pand
                                                  .str.replace(r"(?<![<>])=", "==", regex=True)
                                                  .str.replace(r"<>", "!=", regex=True))
 
-
-    # allocation_logic_axiom_df['AllocationRule'] = (allocation_logic_axiom_df['AllocationRule']
-    #                                                .str.replace('Acct', 'ACCT')
-    #                                                .str.replace('ACCT ', 'ACCT.ACCT ')
-    #                                                .str.replace('ACCT.ACCT.ACCT', 'ACCT.ACCT')
-    #                                                .str.replace('cc', 'CC')
-    #                                                .str.replace('Cc', 'CC')
-    #                                                .str.replace('CC ', 'CC.CC ')
-    #                                                .str.replace('CC.CC.CC', 'CC.CC')
-    #                                                .str.replace('loc', 'LOC')
-    #                                                .str.replace('Loc', 'LOC')
-    #                                                .str.replace('LOC ', 'LOC.LOC '))
-
-
-
-
 # Save Final Allocation Rule
 os.chdir(clean_axiom_data_wsl_folder)
 allocation_logic_axiom_df.to_csv('Converted Axiom Allocation Rules.csv', index=False, encoding='utf-8')
