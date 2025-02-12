@@ -17,16 +17,31 @@ sys.dont_write_bytecode = True  # Stops sys from making __pychace__ folders
 
 
 
-
 # Main Code (Should be on line 20)
-# Define required folder paths
-xero_data_folder = Path("/home/gerrypidgeongopuff/CodingRepository/Python/GoPuff/XeroData/source_data/xero_data")
-system_data_folder = Path("/home/gerrypidgeongopuff/CodingRepository/Python/GoPuff/XeroData/source_data/system_data")
-mapping_data_folder = Path("/home/gerrypidgeongopuff/CodingRepository/Python/GoPuff/XeroData/source_data/mapping_data")
-download_folder = Path("/mnt/c/Users/GerryPidgeon/Downloads")
 
-xero_data_folder = Path(r"H:/Shared drives/EU Finance & Accounting/Commercial Finance/Month End Reporting/01 Raw Data/01 Xero Export Data")
-axiom_data_folder = Path(r"H:\Shared drives\EU Finance & Accounting\Commercial Finance\Month End Reporting\01 Raw Data\02 Axiom Mapping Data")
+# Set Download folder
 
-wsl_path = subprocess.check_output(["wslpath", str(xero_data_folder)]).decode().strip()
-print(wsl_path)
+# Get Windows username dynamically
+windows_user = os.getenv("USERPROFILE")  # Won't work in WSL, so use another method
+if not windows_user:
+    windows_user = os.popen("cmd.exe /c echo %USERNAME%").read().strip()  # Runs Windows CMD in WSL
+windows_download_folder = Path(f"/mnt/c/Users/{windows_user}/Downloads") # Construct the Windows Downloads path
+
+# Set Window Directory Paths
+root_windows_folder = Path(r"H:\\Shared drives\\EU Finance & Accounting\\Commercial Finance\\Month End Reporting\\")
+raw_xero_data_windows_folder = root_windows_folder / "01 Raw Data" / "01 Xero Export Data"
+raw_axiom_data_windows_folder = root_windows_folder / "01 Raw Data" / "02 Axiom Mapping Data"
+consolidated_xero_data_windows_folder = root_windows_folder / "01 Raw Data" / "03 Xero Consolidated Data"
+converted_axiom_data_windows_folder = root_windows_folder / "01 Raw Data" / "04 Axiom Convetred Data"
+clean_xero_data_windows_folder = root_windows_folder / "02 Cleaned Data" / "01 Xero Data"
+clean_axiom_data_windows_folder = root_windows_folder / "02 Cleaned Data" / "02 Axiom Data"
+processed_xero_data_windows_folder = root_windows_folder / "03 Processed Data"
+
+# Convert Windows Directory Paths to WSL
+raw_xero_data_wsl_folder = Path(str(raw_xero_data_windows_folder).replace("H:", "/mnt/h").replace("\\", "/"))
+raw_axiom_data_wsl_folder = Path(str(raw_axiom_data_windows_folder).replace("H:", "/mnt/h").replace("\\", "/"))
+consolidated_xero_data_wsl_folder = Path(str(consolidated_xero_data_windows_folder).replace("H:", "/mnt/h").replace("\\", "/"))
+converted_axiom_data_wsl_folder = Path(str(converted_axiom_data_windows_folder).replace("H:", "/mnt/h").replace("\\", "/"))
+clean_xero_data_wsl_folder = Path(str(clean_xero_data_windows_folder).replace("H:", "/mnt/h").replace("\\", "/"))
+clean_axiom_data_wsl_folder = Path(str(clean_axiom_data_windows_folder).replace("H:", "/mnt/h").replace("\\", "/"))
+processed_axiom_data_wsl_folder = Path(str(processed_xero_data_windows_folder).replace("H:", "/mnt/h").replace("\\", "/"))

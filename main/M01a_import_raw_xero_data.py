@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 sys.dont_write_bytecode = True  # Stops sys from making __pychace__ folders
 
 # Import specific data and functions from external modules
-from processes.P01_set_file_paths import xero_data_folder
+from processes.P01_set_file_paths import raw_xero_data_wsl_folder, consolidated_xero_data_wsl_folder
 
 
 
@@ -42,7 +42,7 @@ def load_xero_data():
     print(f'{func_name} started')
 
     # List all Excel files in the folder
-    xlsx_files = [f for f in Path(xero_data_folder).glob("*.xlsx") if not f.name.startswith("~$")]
+    xlsx_files = [f for f in Path(raw_xero_data_wsl_folder).glob("*.xlsx") if not f.name.startswith("~$")]
 
     # Initialize an empty list to store DataFrames
     dataframes = []
@@ -71,6 +71,11 @@ def load_xero_data():
 
     # Combine all DataFrames
     combined_xero_data = pd.concat(dataframes, ignore_index=True)
+
+    # Save file
+    os.chdir(consolidated_xero_data_wsl_folder)
+    combined_xero_data.to_csv('Consolidated Xero Data.csv', index=False, encoding='utf-8')
+    print(f"Saving file to: {os.getcwd()}")
 
     # Capture end time and calculate duration
     end_time = dt.datetime.now()

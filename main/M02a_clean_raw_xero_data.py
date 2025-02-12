@@ -13,10 +13,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 sys.dont_write_bytecode = True  # Stops sys from making __pychace__ folders
 
 # Import specific data and functions from external modules
-from processes.P01_set_file_paths import download_folder
+from processes.P01_set_file_paths import consolidated_xero_data_wsl_folder, clean_xero_data_wsl_folder
 from processes.P03_shared_functions import clean_numeric_column, calculate_x_rate
 from processes.P04_static_lists import XERO_COLUMNS_TO_KEEP, XERO_COLUMNS_TO_RENAME, XERO_COLUMNS_SORT_ORDER
-from main.M01a_import_raw_xero_data import imported_xero_data
 
 # Main Code
 def process_xero_data():
@@ -28,14 +27,14 @@ def process_xero_data():
     print(f'{func_name} started')
 
     # Create Dataframe with imported data
-    df = imported_xero_data.copy()
+    df = pd.read_csv(consolidated_xero_data_wsl_folder / 'Consolidated Xero Data.csv', encoding='utf-8')
 
     # Adjust Dataframe by retaining and renaming columns
     df = df[XERO_COLUMNS_TO_KEEP]
     df = df.rename(columns=XERO_COLUMNS_TO_RENAME)
         
     # Clean and create Date column(s)
-    df['TxDate'] = pd.to_datetime(df['TxDate'], format='%d %b %Y').dt.date
+    df['TxDate'] = pd.to_datetime(df['TxDate']).dt.date
     df['TxMonth'] = df['TxDate'].apply(lambda x: pd.Timestamp(year=x.year, month=x.month, day=1))
 
     # Clean Numerical column(s)
@@ -61,10 +60,11 @@ def process_xero_data():
 
     # Reorder Dataframe
     df = df[XERO_COLUMNS_SORT_ORDER]
+    df = df.sort_values(by=['TxDate', 'GLNumber'], ascending=True)
 
     # Temp Save
-    os.chdir(download_folder)
-    df.to_csv('Xero Data.csv', index=False, encoding="utf-8")
+    os.chdir(clean_xero_data_wsl_folder)
+    df.to_csv('Cleaned Xero Data.csv', index=False, encoding="utf-8")
     print(f"Saving file to: {os.getcwd()}")
 
     # Capture end time and calculate duration

@@ -1,6 +1,7 @@
 # Import necessary libraries (should be consistent across all sheets)
 import os  # Module for interacting with the operating system (e.g., file paths)
 import sys  # Module for accessing system-specific parameters and functions
+import re
 import pandas as pd  # Library for data manipulation and analysis
 import numpy as np  # Library for numerical operations and array handling
 import datetime as dt  # Module for working with dates and times
@@ -73,3 +74,55 @@ def calculate_x_rate(df, transaction_type="Debit"):
     df[xrate_col] = df[xrate_col].replace([float('inf'), -float('inf')], 1)  # Handle division by zero
 
     return df
+
+def convert_sql_to_pandas_filter(sql_condition):
+    """
+    Convert SQL-like conditions into Pandas filtering expressions.
+    """
+
+    # Standardize spacing and case
+    sql_condition = sql_condition.strip()
+
+    # Convert standalone ACCT, CC, and LOC to explicit field names
+    sql_condition = re.sub(r'\bACCT\b', 'ACCT.ACCT', sql_condition)
+    sql_condition = re.sub(r'\bCC\b', 'CC.CC', sql_condition)
+    sql_condition = re.sub(r'\bLOC\b', 'LOC.LOC', sql_condition)
+
+    # Replace SQL logical operators with Pandas equivalents
+    sql_condition = sql_condition.replace(" and ", " & ").replace(" AND ", " & ")
+    sql_condition = sql_condition.replace(" or ", " | ").replace(" OR ", " | ")
+    sql_condition = sql_condition.replace("<>", "!=")
+
+    # # Handle string equality conditions (e.g., column = 'value')
+    # sql_condition = re.sub(r"(\b\w+\.\w+\b)\s*=\s*'([^']*)'", r"(df['\1'] == '\2')", sql_condition)
+
+    # # Handle string inequality conditions (e.g., column <> 'value')
+    # sql_condition = re.sub(r"(\b\w+\.\w+\b)\s*!=\s*'([^']*)'", r"(df['\1'] != '\2')", sql_condition)
+
+    # # Handle NOT IN clauses (e.g., column NOT IN ('val1', 'val2'))
+    # sql_condition = re.sub(r"(\b\w+\.\w+\b)\s*not in\s*\(([^)]+)\)", r"(~df['\1'].isin([\2]))", sql_condition)
+
+    # # Handle IN clauses (e.g., column IN ('val1', 'val2'))
+    # sql_condition = re.sub(r"(\b\w+\.\w+\b)\s*in\s*\(([^)]+)\)", r"(df['\1'].isin([\2]))", sql_condition)
+
+    # # Handle numeric conditions (e.g., column = 123, column <> 456)
+    # sql_condition = re.sub(r"(\b\w+\.\w+\b)\s*=\s*(\d+)", r"(df['\1'] == \2)", sql_condition)
+    # sql_condition = re.sub(r"(\b\w+\.\w+\b)\s*!=\s*(\d+)", r"(df['\1'] != \2)", sql_condition)
+
+    # # Ensure all column references are wrapped in df[]
+    # sql_condition = re.sub(r'\b([A-Z]+\.[A-Z0-9_]+)\b', r"df['\1']", sql_condition)
+
+    # # Ensure proper handling of multiple conditions
+    # sql_condition = re.sub(r'(\(df\[\'[A-Z0-9_.]+\'\] == .+?)\s*([&|])\s*(df\[\'[A-Z0-9_.]+\'\] == .+?\))', r"(\1 \2 \3)", sql_condition)
+
+    # # Fix accidental duplicate df['df[' issues
+    # sql_condition = sql_condition.replace("df['df[", "df[")
+
+    # # ✅ Debugging Output
+    # print(f"🔵 Converted Pandas filter: {sql_condition}")
+
+    # # ❌ Syntax Error Checking: Detect incorrect `=` usage
+    # if re.search(r"(?<![=!<>])=(?![=!<>])", sql_condition):  
+    #     raise ValueError(f"❌ Syntax Error: Detected a misplaced '=' in filter: {sql_condition}")
+
+    return sql_condition
